@@ -1,15 +1,15 @@
 #include <MaxMatrix.h>
 #include <SPI.h>
-int DIN = 19;   // DIN pin of MAX7219 module
-int CLK = 17;   // CLK pin of MAX7219 module
-int CS = 18;    // CS pin of MAX7219 module
-int button = 14;   // pin for the control button
-int maxInUse = 1;   //How many 8x8 led matrices will be in use
-int switchState = 0;
-int modeState = 0;
-int hasRunM0 = 0;
-int hasRunM1 = 1;
-MaxMatrix m(DIN, CS, CLK, maxInUse); 
+int DIN = ;   // DIN pin of MAX7219 module
+int CLK = ;   // CLK pin of MAX7219 module
+int CS = ;    // CS pin of MAX7219 module
+int button = ;   // pin for the control button
+int maxInUse = ;   //How many 8x8 led matrices will be in use
+int switchState = 0;  //variable for the button's state
+int modeState = 0;    //variable for the current mode
+int hasRunM0 = 0;     //keep track of running display elements
+int hasRunM1 = 1;     //keep track of running display elements
+MaxMatrix m(DIN, CS, CLK, maxInUse);  //create a new MaxMatrix called m
 
 //pattern for an empty heart
 byte heartEmpty[] = {8,8,
@@ -193,40 +193,30 @@ void setup() {
   pinMode(button, INPUT); //recieve input through the button pin
   m.init(); // MAX7219 initialization
   m.setIntensity(8); // initial led matrix intensity, 0-15
-  //  open serial to debug
-  //  Serial.begin(115200);  
-  //  Serial.println("--- Start Serial Monitor SEND_RCVE ---");
 }
 
 //runtime loop
 void loop() {
   switchState = digitalRead(button);
-  //debugging print statements
-  /*Serial.println("Switch:");
-  * Serial.println(switchState);
-  * Serial.println("Mode:");
-  * Serial.println(modeState);
-  */
   
-  while (switchState == 1){
-    //Serial.println("Switching");
-    if (modeState == 0){
-      modeState = 1;
-      m.clear();
-      m.writeSprite(0,0,number2);
-      delay(2000);
+  while (switchState == 1){ //button pressed
+    if (modeState == 0){    //if mode 0
+      modeState = 1;        //goto next mode
+      m.clear();            //clear screen
+      m.writeSprite(0,0,number2); //display the number 2
+      delay(2000);          //wait
       break;
     }
-    else if(modeState == 1){
-      modeState = 0;
-      m.clear();
-      m.writeSprite(0,0,number1);
-      delay(2000);
+    else if(modeState == 1){  //if mode 1
+      modeState = 0;          //goto next mode
+      m.clear();              //clear screen
+      m.writeSprite(0,0,number1); //write the number 1
+      delay(2000);            //wait
       break;
     }
   }
-  while(switchState == 0){
-  if (modeState == 0){
+  while(switchState == 0){  //button not pressed
+  if (modeState == 0){      //mode 0 animation, we will constantly be checking to see if the button is pressed to switch modes
     m.clear();
     if (digitalRead(button) == 1){
       break;
@@ -258,7 +248,7 @@ void loop() {
     delay(500);
     break;
     }
-    else if (modeState == 1){
+    else if (modeState == 1){ //mode 1 animation, we will constantly be checking to see if the button is pressed to switch modes
       m.writeSprite(0,0,heartFull);
       delay(1000);
       break;

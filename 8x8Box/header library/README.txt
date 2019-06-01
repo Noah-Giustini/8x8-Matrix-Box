@@ -1,0 +1,1 @@
+move the max7219-master folder into your arduino libraries folder. if you dont know how to do this please look it up. without this you cannot control the module and you cannot compile this code
